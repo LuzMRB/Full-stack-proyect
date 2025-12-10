@@ -1,0 +1,2 @@
+# Full-stack-proyect
+Solitario 
