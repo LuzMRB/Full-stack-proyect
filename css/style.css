@@ -276,7 +276,7 @@ section h2 {
 }
 
 .regla-card {
-    background-color: #fff477;          /* Amarillo muy claro */
+    background-color: #FFF4CC;         
     padding: 20px;
     border-radius: 8px;
     border-left: 4px solid #ff8f00;     /* Línea naranja a la izquierda */
@@ -293,14 +293,9 @@ section h2 {
 }
 
 
-/* ============================================================
+/* 
    8. FORMULARIO
-   
-   CONCEPTOS UD2:
-   - Estilos para <form>, <label>, <input>
-   - :focus pseudo-clase: cuando el campo está activo/seleccionado
-   - outline: borde que aparece al hacer clic en un campo
-============================================================ */
+*/
 
 .formulario {
     max-width: 500px;
@@ -344,14 +339,9 @@ section h2 {
 }
 
 
-/* ============================================================
+/* 
    9. TABLA DE RANKING
-   
-   CONCEPTOS UD2:
-   - Estilos para <table>, <th>, <td>
-   - border-collapse: collapse → une los bordes de las celdas
-   - :nth-child(even) → pseudo-clase para filas pares (zebra)
-============================================================ */
+    */
 
 .tabla-ranking {
     width: 100%;
@@ -368,7 +358,7 @@ section h2 {
 
 /* Cabecera de la tabla */
 .tabla-ranking th {
-    background-color: #5d4037;          /* Fondo marrón oscuro */
+    background-color: #8B5E3C;          /* Fondo marrón oscuro */
     color: #fff;                        /* Texto blanco */
     font-weight: bold;
 }
@@ -384,15 +374,12 @@ section h2 {
 }
 
 
-/* ============================================================
+/* 
    10. FOOTER
-   
-   CONCEPTOS UD2:
-   - Mismo estilo que el header para consistencia visual
-============================================================ */
+ */
 
 footer {
-    background-color: #5d4037;
+    background-color: #8B5E3C;
     color: #d7ccc8;
     text-align: center;
     padding: 20px 0;
@@ -405,23 +392,22 @@ footer p {
 }
 
 
-/* ============================================================
-   11. MEDIA QUERIES — DISEÑO RESPONSIVO
+/* 
+   11. MEDIA QUERIES, DISEÑO RESPONSIVO
    
-   CONCEPTO CLAVE UD2/UD6:
    Las Media Queries permiten aplicar estilos DIFERENTES
    según el tamaño de la pantalla.
    
    @media (max-width: XXpx) {
-       → Se aplica cuando la pantalla es MENOR o IGUAL a XXpx
+       Se aplica cuando la pantalla es MENOR o IGUAL a XXpx
    }
    
    Breakpoints (puntos de quiebre):
    - Tablet: max-width: 768px
    - Móvil: max-width: 480px
-============================================================ */
+ */
 
-/* ---- TABLET (pantallas hasta 768px de ancho) ---- */
+/*TABLET (pantallas hasta 768px de ancho)*/
 @media (max-width: 768px) {
 
     /* El título se reduce */
@@ -465,7 +451,7 @@ footer p {
     }
 }
 
-/* ---- MÓVIL (pantallas hasta 480px de ancho) ---- */
+/*  MÓVIL (pantallas hasta 480px de ancho) */
 @media (max-width: 480px) {
 
     header h1 {
