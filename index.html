@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<!-- 
+    DOCTYPE: Declara que este documento es HTML5.
+-->
+<html lang="es">
+<!-- 
+    <html>: Elemento raíz del documento. 
+    lang="es": Indica que el idioma de la página es español.
+-->
+
+<head>
+    <!-- 
+        <head>: Contiene los METADATOS del documento.
+    -->
+
+    <!-- Codificación de caracteres: UTF-8 soporta tildes, ñ, emojis, etc. -->
+    <meta charset="UTF-8">
+
+    <!-- Meta viewport: FUNDAMENTAL para el diseño responsivo (UD6) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Meta descripción: útil para SEO (que Google entienda de qué va la página) -->
+    <meta name="description" content="Juego de Solitario Triangular - Proyecto Full Stack para Ingeniería Web I">
+
+    <!-- Autor de la página -->
+    <meta name="author" content="Luz Rubio Bolger">
+
+    <!-- Título: aparece en la pestaña del navegador -->
+    <title>Solitario Triangular | Luz Rubio Bolger</title>
+
+    <!-- 
+        Enlace al archivo CSS EXTERNO.
+        Separamos contenido (HTML) de presentación (CSS).
+        rel="stylesheet" indica que es una hoja de estilos.
+        href="css/style.css" es la ruta relativa al archivo CSS.
+    -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- 
+        <body>: Contiene TODO el contenido VISIBLE de la página.
+        Aquí van los textos, imágenes, formularios, el juego, etc.
+    -->
+
+    <!-- 
+         HEADER: Encabezado de la página
+         Contiene el título principal y la navegación.
+         Es una etiqueta SEMÁNTICA de HTML5.
+   -->
+    <header>
+        <div class="container">
+            <!-- h1: Título principal de la página  -->
+            <h1> Solitario </h1>
+            <p class="subtitulo">¿Podrás resolver este puzle?</p>
+
+            <!-- NAV: Etiqueta semántica para la NAVEGACIÓN -->
+            <nav>
+                <!-- 
+                    Lista no ordenada <ul> con enlaces <a>.
+                    Los href="#seccion" son enlaces internos (anclas)
+                    que llevan a las secciones de la misma página.
+                -->
+                <ul class="nav-links">
+                    <li><a href="#juego">Juego</a></li>
+                    <li><a href="#reglas">Reglas</a></li>
+                    <li><a href="#ranking">Ranking</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 
+         MAIN: Contenido principal de la página.
+         Solo debe haber UN <main> por página.
+         Dentro van las diferentes SECCIONES con <section>.
+ -->
+    <main>
+
+        <!-- 
+             SECCIÓN 1: El Juego
+     -->
+        <section id="juego">
+            <h2> Empieza a resolver</h2>
+            <p>Haz clic en una ficha y luego en un hueco para saltar y eliminar fichas.</p>
+
+            <!-- Contenedor del tablero triangular -->
+            <div class="tablero-container">
+                <!-- 
+                    El tablero tiene 15 posiciones en forma de triángulo (5 filas).
+                    Cada posición es un <div> con:
+                    - class="posicion": estilo base
+                    - class="ficha" o "vacia": si tiene ficha o no
+                    - data-pos="N": atributo de datos personalizado (HTML5)
+                      para identificar cada posición con JavaScript
+                    
+                    Forma del tablero:
+                         [0]
+                        [1][2]
+                       [3][4][5]
+                      [6][7][8][9]
+                    [10][11][12][13][14]
+                -->
+                <div class="tablero" id="tablero">
+                    <!-- Fila 1: 1 posición -->
+                    <div class="fila">
+                        <div class="posicion vacia" data-pos="0"></div>
+                    </div>
+                    <!-- Fila 2: 2 posiciones -->
+                    <div class="fila">
+                        <div class="posicion ficha" data-pos="1"></div>
+                        <div class="posicion ficha" data-pos="2"></div>
+                    </div>
+                    <!-- Fila 3: 3 posiciones -->
+                    <div class="fila">
+                        <div class="posicion ficha" data-pos="3"></div>
+                        <div class="posicion ficha" data-pos="4"></div>
+                        <div class="posicion ficha" data-pos="5"></div>
+                    </div>
+                    <!-- Fila 4: 4 posiciones -->
+                    <div class="fila">
+                        <div class="posicion ficha" data-pos="6"></div>
+                        <div class="posicion ficha" data-pos="7"></div>
+                        <div class="posicion ficha" data-pos="8"></div>
+                        <div class="posicion ficha" data-pos="9"></div>
+                    </div>
+                    <!-- Fila 5: 5 posiciones -->
+                    <div class="fila">
+                        <div class="posicion ficha" data-pos="10"></div>
+                        <div class="posicion ficha" data-pos="11"></div>
+                        <div class="posicion ficha" data-pos="12"></div>
+                        <div class="posicion ficha" data-pos="13"></div>
+                        <div class="posicion ficha" data-pos="14"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de estadísticas del juego -->
+            <div class="stats-panel">
+                <div class="stat">
+                    <span class="stat-label">Fichas restantes:</span>
+                    <span class="stat-valor" id="fichas-restantes">14</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Movimientos:</span>
+                    <span class="stat-valor" id="movimientos">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Tiempo:</span>
+                    <span class="stat-valor" id="tiempo">00:00</span>
+                </div>
+            </div>
+
+            <!-- Botones de control del juego -->
+            <div class="controles">
+                <button id="btn-reiniciar" class="btn btn-primary">Reiniciar</button>
+                <button id="btn-deshacer" class="btn btn-secondary">Deshacer</button>
+                <button id="btn-pista" class="btn btn-secondary">Pista</button>
+            </div>
+        </section>
+
+        <!-- 
+             SECCIÓN 2: Reglas del Juego
+ -->
+        <section id="reglas">
+            <h2>Reglas del Juego</h2>
+
+            <!-- 
+                Usamos <div> con clases para crear tarjetas.
+                Las tarjetas se organizarán en grid con CSS.
+            -->
+            <div class="reglas-grid">
+                <div class="regla-card">
+                    <h3>1. Objetivo</h3>
+                    <p>Eliminar todas las fichas del tablero hasta dejar solo una.</p>
+                </div>
+                <div class="regla-card">
+                    <h3>2. Movimiento</h3>
+                    <p>Una ficha salta sobre otra adyacente y aterriza en un hueco vacío.</p>
+                </div>
+                <div class="regla-card">
+                    <h3>3. Captura</h3>
+                    <p>La ficha saltada se elimina del tablero automáticamente.</p>
+                </div>
+                <div class="regla-card">
+                    <h3>4. Fin</h3>
+                    <p>La partida termina cuando no quedan movimientos posibles.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 
+             SECCIÓN 3: Ranking de Puntuaciones
+ -->
+        <section id="ranking">
+            <h2>Ranking de Jugadores</h2>
+
+            <!-- 
+                FORMULARIO: 
+                - action: URL donde se envían los datos (se conectará con PHP en UD4)
+                - method="post": Envío seguro de datos
+                - id: Para acceder desde JavaScript 
+                
+                Cada campo tiene:
+                - <label for="id">: Etiqueta vinculada al campo (accesibilidad)
+                - <input type="" id="" name="">: Campo de entrada
+                - required: Validación HTML5 (campo obligatorio)
+                - placeholder: Texto de ayuda
+            -->
+            <form id="form-puntuacion" class="formulario">
+                <h3>Guardar tu puntuación</h3>
+
+                <div class="form-grupo">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" 
+                           placeholder="Tu nombre" 
+                           required 
+                           minlength="2" 
+                           maxlength="50">
+                </div>
+
+                <div class="form-grupo">
+                    <label for="email">Email (opcional):</label>
+                    <input type="email" id="email" name="email" 
+                           placeholder="tu@email.com">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar Puntuación</button>
+            </form>
+
+            <!-- 
+                TABLA: Muestra el ranking de los mejores jugadores.
+                - <table>: Define la tabla
+                - <thead>: Cabecera (títulos de columna)
+                - <tbody>: Cuerpo (datos, se rellenará con JS/Fetch )
+                - <tr>: Fila (table row)
+                - <th>: Celda de cabecera (table header)
+                - <td>: Celda de datos (table data)
+            -->
+            <table class="tabla-ranking" id="tabla-ranking">
+                <thead>
+                    <tr>
+                        <th>Pos.</th>
+                        <th>Jugador</th>
+                        <th>Fichas</th>
+                        <th>Movimientos</th>
+                        <th>Tiempo</th>
+                        <th>Puntuación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Datos de ejemplo  -->
+                    <tr>
+                        <td>1</td>
+                        <td>Ejemplo</td>
+                        <td>1</td>
+                        <td>13</td>
+                        <td>02:30</td>
+                        <td>1850</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <!-- 
+         FOOTER: Pie de página.
+         Etiqueta semántica para información secundaria:
+         copyright, créditos, contacto, etc.
+-->
+    <footer>
+        <p>&copy; 2025 Solitario — Luz Rubio Bolger — UAX</p>
+        <p>Proyecto de Ingeniería Web I</p>
+    </footer>
+
+    <!-- 
+        Enlace al archivo JavaScript EXTERNO.
+        Se coloca al final del body para que el HTML cargue primero.
+    
+    -->
+    <script src="js/script.js"></script>
+
+</body>
+</html>

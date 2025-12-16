@@ -1,0 +1,500 @@
+/* ============================================================
+   STYLE.CSS — Solitario Triangular
+   Hoja de estilos EXTERNA (buena práctica según UD2)
+   
+   Contenido:
+   1. Reset y estilos generales
+   2. Header y navegación
+   3. Secciones principales
+   4. Tablero de juego
+   5. Panel de estadísticas
+   6. Botones
+   7. Reglas del juego
+   8. Formulario
+   9. Tabla de ranking
+   10. Footer
+   11. Media Queries (diseño responsivo)
+============================================================ */
+
+
+/* ============================================================
+   1. RESET Y ESTILOS GENERALES
+   
+   El "reset" elimina los estilos por defecto del navegador
+   para que todos los navegadores muestren lo mismo.
+   
+   CONCEPTOS UD2:
+   - margin: espacio EXTERIOR del elemento
+   - padding: espacio INTERIOR del elemento
+   - box-sizing: border-box hace que padding y border
+     se incluyan dentro del ancho total del elemento
+   - font-family: define la fuente del texto
+============================================================ */
+
+/* Aplica box-sizing a TODOS los elementos (*) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos del body: afectan a toda la página */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, 'Times New Roman';
+    background-color: #fff4cc;       /* Fondo beige claro */
+    color: #333333;                      /* Color del texto: gris oscuro */
+    line-height: 1.6;                 /* Altura de línea: mejora legibilidad */
+}
+
+
+/* 
+   2. HEADER Y NAVEGACIÓN
+   
+ */
+
+header {
+    background-color: #8b5e3c;        /* Marrón oscuro */
+    color: #fff;                      /* Texto blanco */
+    padding: 20px 0;                  /* 20px arriba/abajo, 0 a los lados */
+    text-align: center;
+}
+
+/* Clase .container: centra el contenido con ancho máximo */
+.container {
+    max-width: 900px;                 /* No se estira más de 900px */
+    margin: 0 auto;                   /* auto en los lados = centrado */
+    padding: 0 20px;                  /* Espacio a los lados */
+}
+
+header h1 {
+    font-size: 2em;                   /* 2 veces el tamaño base */
+    margin-bottom: 5px;
+}
+
+.subtitulo {
+    font-size: 0.9em;
+    color: #d7ccc8;                   /* Beige claro */
+    margin-bottom: 15px;
+}
+
+/* Navegación: lista horizontal con Flexbox */
+nav ul {
+    list-style: none;                 /* Elimina las viñetas de la lista */
+    display: flex;                    /* Flexbox: pone los items en fila */
+    justify-content: center;          /* Centra los items horizontalmente */
+    gap: 20px;                        /* Espacio entre los items */
+}
+
+/* Estilos de los enlaces del nav */
+nav a {
+    color: #fff;                      /* Texto blanco */
+    text-decoration: none;            /* Quita el subrayado */
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 4px;               /* Esquinas redondeadas */
+    transition: background-color 0.3s; /* Transición suave al hacer hover */
+}
+
+/* 
+   PSEUDO-CLASE :hover
+   Se activa cuando el cursor pasa por encima del elemento.
+*/
+nav a:hover {
+    background-color: #e20909;      
+}
+
+/* 
+   3. SECCIONES PRINCIPALES
+   
+ */
+
+section {
+    max-width: 1000px;
+    margin: 30px auto;                /* 30px arriba/abajo, centrado */
+    padding: 30px;
+    background-color: #fff;           /* Fondo blanco */
+    border-radius: 8px;               /* Esquinas redondeadas */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+section h2 {
+    color: #5d4037;                   /* Marrón oscuro */
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+
+/* 
+   4. TABLERO DE JUEGO
+   
+ */
+
+.tablero-container {
+    display: flex;
+    justify-content: center;          /* Centra el tablero */
+    margin: 20px 0;
+}
+
+.tablero {
+    display: flex;
+    flex-direction: column;           /* Las filas se apilan verticalmente */
+    align-items: center;              /* Centra cada fila */
+    gap: 8px;                         /* Espacio entre filas */
+}
+
+.fila {
+    display: flex;                    /* Los huecos de cada fila en horizontal */
+    gap: 8px;                         /* Espacio entre posiciones */
+}
+
+/* Cada posición del tablero (círculo) */
+.posicion {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;               /* Lo hace circular */
+    border: 2px solid #f60606;        /* Borde marrón */
+    cursor: pointer;                   /* Cursor de mano al pasar */
+    transition: transform 0.2s, background-color 0.3s; /* Transiciones suaves */
+}
+
+/* Posición con ficha (ocupada) */
+.posicion.ficha {
+    background-color: #ec0ea2;         /* Naranja oscuro */
+    border-color: #f107d9;
+    box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.3); /* Efecto 3D */
+}
+
+/* Posición vacía (sin ficha) */
+.posicion.vacia {
+    background-color: #d7ccc8;         /* Beige claro */
+    border-color: #bcaaa4;
+}
+
+/* Hover sobre una ficha */
+.posicion.ficha:hover {
+    transform: scale(1.1);             /* Se agranda un 10% */
+    background-color: #0fbcf1;         
+}
+
+/* Ficha seleccionada añado luego las fuciones */
+.posicion.seleccionada {
+    background-color: #ffab00;         /* Amarillo/dorado */
+    border-color: #ff8f00;
+    transform: scale(1.15);
+    box-shadow: 0 0 15px rgba(255, 171, 0, 0.6); /* Brillo dorado */
+}
+
+
+/* 
+   5. PANEL DE ESTADÍSTICAS
+   
+ */
+
+.stats-panel {
+    display: flex;
+    justify-content: space-around;     /* Distribuye equitativamente */
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #efebe9;         /* Fondo beige */
+    border-radius: 8px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;                    /* Ocupa toda la línea */
+    font-size: 0.85em;
+    color: #795548;                    
+}
+
+.stat-valor {
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #5d4037;                 
+}
+
+
+/* 
+   6. BOTONES
+   
+*/
+
+.controles {
+    display: flex;
+    justify-content: center;
+    gap: 15px;                         /* Espacio entre botones */
+    margin-top: 20px;
+}
+
+/* Clase base para TODOS los botones */
+.btn {
+    padding: 10px 25px;
+    font-size: 1em;
+    border: none;                      /* Sin borde */
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Botón principal (verde) */
+.btn-primary {
+    background-color: #4CAF50;        
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #388E3C;         /* Verde más oscuro */
+    transform: translateY(-2px);       /* Sube 2px → efecto de "elevación" */
+}
+
+/* Botón secundario (gris) */
+.btn-secondary {
+    background-color: #9e9e9e;        
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #757575;       
+    transform: translateY(-2px);
+}
+
+
+/* 
+   7. REGLAS DEL JUEGO (tarjetas)
+ */
+
+.reglas-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);  /* 2 columnas iguales */
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.regla-card {
+    background-color: #fff477;          /* Amarillo muy claro */
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #ff8f00;     /* Línea naranja a la izquierda */
+}
+
+.regla-card h3 {
+    color: #e65100;                     /* Naranja oscuro */
+    margin-bottom: 8px;
+}
+
+.regla-card p {
+    color: #555;
+    font-size: 0.95em;
+}
+
+
+/* ============================================================
+   8. FORMULARIO
+   
+   CONCEPTOS UD2:
+   - Estilos para <form>, <label>, <input>
+   - :focus pseudo-clase: cuando el campo está activo/seleccionado
+   - outline: borde que aparece al hacer clic en un campo
+============================================================ */
+
+.formulario {
+    max-width: 500px;
+    margin: 0 auto 30px;              /* Centrado con margen inferior */
+    padding: 25px;
+    background-color: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.formulario h3 {
+    text-align: center;
+    color: #5d4037;
+    margin-bottom: 20px;
+}
+
+.form-grupo {
+    margin-bottom: 15px;
+}
+
+.form-grupo label {
+    display: block;                    /* Etiqueta en su propia línea */
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-grupo input {
+    width: 100%;                       /* Ocupa todo el ancho disponible */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+/* Pseudo-clase :focus → cuando el usuario hace clic en el campo */
+.form-grupo input:focus {
+    outline: none;                     /* Quita el borde azul por defecto */
+    border-color: #5d4037;             /* Borde marrón */
+    box-shadow: 0 0 5px rgba(93, 64, 55, 0.3); /* Brillo sutil */
+}
+
+
+/* ============================================================
+   9. TABLA DE RANKING
+   
+   CONCEPTOS UD2:
+   - Estilos para <table>, <th>, <td>
+   - border-collapse: collapse → une los bordes de las celdas
+   - :nth-child(even) → pseudo-clase para filas pares (zebra)
+============================================================ */
+
+.tabla-ranking {
+    width: 100%;
+    border-collapse: collapse;          /* Bordes unidos (sin doble línea) */
+    margin-top: 20px;
+}
+
+.tabla-ranking th,
+.tabla-ranking td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;  /* Línea separadora inferior */
+}
+
+/* Cabecera de la tabla */
+.tabla-ranking th {
+    background-color: #5d4037;          /* Fondo marrón oscuro */
+    color: #fff;                        /* Texto blanco */
+    font-weight: bold;
+}
+
+/* Filas pares con fondo alterno (efecto zebra) */
+.tabla-ranking tbody tr:nth-child(even) {
+    background-color: #f5f5f5;
+}
+
+/* Hover en filas de la tabla */
+.tabla-ranking tbody tr:hover {
+    background-color: #efebe9;
+}
+
+
+/* ============================================================
+   10. FOOTER
+   
+   CONCEPTOS UD2:
+   - Mismo estilo que el header para consistencia visual
+============================================================ */
+
+footer {
+    background-color: #5d4037;
+    color: #d7ccc8;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 40px;
+}
+
+footer p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+
+/* ============================================================
+   11. MEDIA QUERIES — DISEÑO RESPONSIVO
+   
+   CONCEPTO CLAVE UD2/UD6:
+   Las Media Queries permiten aplicar estilos DIFERENTES
+   según el tamaño de la pantalla.
+   
+   @media (max-width: XXpx) {
+       → Se aplica cuando la pantalla es MENOR o IGUAL a XXpx
+   }
+   
+   Breakpoints (puntos de quiebre):
+   - Tablet: max-width: 768px
+   - Móvil: max-width: 480px
+============================================================ */
+
+/* ---- TABLET (pantallas hasta 768px de ancho) ---- */
+@media (max-width: 768px) {
+
+    /* El título se reduce */
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    /* La navegación pasa a columna en vez de fila */
+    nav ul {
+        flex-direction: column;         /* Links uno debajo del otro */
+        gap: 10px;
+    }
+
+    /* Las secciones tienen menos padding */
+    section {
+        margin: 15px 10px;
+        padding: 20px;
+    }
+
+    /* Las reglas pasan de 2 columnas a 1 */
+    .reglas-grid {
+        grid-template-columns: 1fr;     /* Solo 1 columna */
+    }
+
+    /* El stats panel se apila en columna */
+    .stats-panel {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* Los botones se apilan */
+    .controles {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Las posiciones del tablero se hacen más pequeñas */
+    .posicion {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* ---- MÓVIL (pantallas hasta 480px de ancho) ---- */
+@media (max-width: 480px) {
+
+    header h1 {
+        font-size: 1.2em;
+    }
+
+    section h2 {
+        font-size: 1.3em;
+    }
+
+    /* Las posiciones del tablero aún más pequeñas */
+    .posicion {
+        width: 35px;
+        height: 35px;
+    }
+
+    .fila {
+        gap: 5px;                       /* Menos espacio entre fichas */
+    }
+
+    /* La tabla se reduce */
+    .tabla-ranking th,
+    .tabla-ranking td {
+        padding: 8px 4px;
+        font-size: 0.8em;
+    }
+
+    /* El formulario ocupa todo el ancho */
+    .formulario {
+        padding: 15px;
+    }
+}
