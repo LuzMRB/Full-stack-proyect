@@ -251,7 +251,7 @@ function ejecutarMovimiento(origen, destino) {
     verificarFinJuego();
 }
 
-// --- FUNCIÓN: VERIFICAR FIN DEL JUEGO ---
+//  FUNCIÓN: VERIFICAR FIN DEL JUEGO
 function verificarFinJuego() {
     // Comprobar si queda algún movimiento posible
     let hayMovimientos = false;
@@ -275,11 +275,11 @@ function verificarFinJuego() {
 
         // Mostrar mensaje según resultado
         if (fichasRestantes === 1) {
-            alert('🎉 ¡VICTORIA! Has dejado solo 1 ficha en ' +
+            alert(' ¡VICTORIA! Has dejado solo 1 ficha en ' +
                   movimientos + ' movimientos y ' +
                   formatearTiempo(tiempoSegundos) + '.');
         } else {
-            alert('😔 Fin de la partida. Quedan ' + fichasRestantes +
+            alert(' Fin de la partida. Quedan ' + fichasRestantes +
                   ' fichas. ¡Inténtalo de nuevo!');
         }
     }
@@ -333,14 +333,13 @@ function mostrarPista() {
 
 //  FUNCIÓN: INICIAR TEMPORIZADOR 
 // setInterval ejecuta una función cada X milisegundos
-// Función flecha (UD3: arrow function) => sintaxis concisa
 function iniciarTemporizador() {
     temporizador = setInterval(() => {
         tiempoSegundos++;
         spanTiempo.textContent = formatearTiempo(tiempoSegundos);
     }, 1000); // 1000 ms = 1 segundo
 }
-// --- VALIDACIÓN DEL FORMULARIO ---
+//  VALIDACIÓN DEL FORMULARIO -
 function validarFormulario(evento) {
     // preventDefault(): evita que el formulario recargue la página
     evento.preventDefault();
@@ -363,8 +362,8 @@ function validarFormulario(evento) {
         }
     }
 
-    // Si pasa la validación, mostrar mensaje (en UD6 lo enviaremos al servidor)
-    alert('✅ Puntuación guardada!\n' +
+    // Si pasa la validación, mostrar mensaje 
+    alert(' Puntuación guardada!\n' +
           'Jugador: ' + nombre + '\n' +
           'Fichas restantes: ' + fichasRestantes + '\n' +
           'Movimientos: ' + movimientos + '\n' +
@@ -374,10 +373,8 @@ function validarFormulario(evento) {
 }
 
 
-// ============================================================
-// EVENT LISTENERS — Conectar HTML con JavaScript
-// addEventListener('evento', función) → UD3: eventos
-// ============================================================
+// EVENT LISTENERS: Conectar HTML con JavaScript
+
 
 // Clic en cada posición del tablero
 elementosTablero.forEach((elemento, indice) => {
@@ -395,8 +392,8 @@ btnPista.addEventListener('click', mostrarPista);
 formPuntuacion.addEventListener('submit', validarFormulario);
 
 
-// ============================================================
-// INICIALIZACIÓN — Se ejecuta al cargar la página
-// ============================================================
+
+// INICIALIZACIÓN  Se ejecuta al cargar la página
+
 inicializarJuego();
-console.log('🔺 Solitario Triangular — JS cargado correctamente');
+console.log(' Solitario — JS cargado correctamente');
