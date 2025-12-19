@@ -501,3 +501,45 @@ formPuntuacion.addEventListener('submit', validarFormulario);
 
 inicializarJuego();
 console.log(' Solitario — JS cargado correctamente');
+
+//  EVENT LISTENERS DE VALIDACIÓN EN TIEMPO REAL
+
+// Evento 'blur': se dispara cuando el usuario SALE del campo
+// Ideal para validar cuando termina de escribir
+document.getElementById('nombre').addEventListener('blur', validarNombre);
+document.getElementById('email').addEventListener('blur', validarEmail);
+document.getElementById('password').addEventListener('blur', validarPassword);
+
+// Evento 'input': se dispara con CADA tecla que escribe el usuario
+// Limpia el error mientras escribe (feedback inmediato)
+document.getElementById('nombre').addEventListener('input', () => {
+    const nombre = document.getElementById('nombre').value.trim();
+    if (nombre.length >= 2) {
+        limpiarError('nombre');
+    }
+});
+
+// Evento 'change': se dispara cuando el campo CAMBIA de valor y pierde el foco
+// Diferente de 'input' porque solo se activa al terminar de editar
+document.getElementById('email').addEventListener('change', validarEmail);
+
+// Evento 'focus': se dispara cuando el usuario ENTRA en el campo
+// Útil para dar instrucciones o quitar mensajes
+document.getElementById('password').addEventListener('focus', () => {
+    const spanError = document.getElementById('error-password');
+    // Si no hay error, mostrar una pista
+    if (spanError.textContent === '') {
+        spanError.textContent = 'Mínimo 6 caracteres y 1 número';
+        spanError.style.color = '#3effe2ff';  // Marrón (pista, no error)
+    }
+});
+
+// Al salir del campo password, quitar la pista si es válido
+document.getElementById('password').addEventListener('blur', () => {
+    const spanError = document.getElementById('error-password');
+    if (spanError.style.color === 'rgb(121, 85, 72)') {
+        spanError.textContent = '';
+        spanError.style.color = '';  // Resetear color
+    }
+    validarPassword();
+});
