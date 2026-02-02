@@ -479,7 +479,30 @@ function validarFormulario(evento) {
 //   Un usuario malicioso podría desactivar JavaScript y enviar datos
 //   directamente al servidor, así que la validación en PHP es ESENCIAL.
 
-function enviarPuntuacion() {
+
+//  CLASE 12: AJAX y Fetch API — Comunicacion Asincrona 
+
+//
+// CONCEPTO: async/await 
+//   - async: Declara que una funcion es ASINCRONA (devuelve una Promesa)
+//   - await: ESPERA a que una Promesa se resuelva antes de continuar
+//   - try/catch: Maneja errores de forma limpia (sustituye a .catch())
+//
+// VENTAJA sobre .then():
+//   - El codigo se lee de ARRIBA a ABAJO, como codigo sincrono
+//   - Es mas facil de entender y depurar
+//   - try/catch captura TODOS los errores (red, HTTP, parseo)
+//
+// COMPARACION:
+//   CON .then() (Clase 7):
+//     fetch(url).then(res => res.json()).then(data => { ... }).catch(err => { ... })
+//
+//   CON async/await (Clase 12):
+//     const response = await fetch(url);
+//     const data = await response.json();
+
+
+async function enviarPuntuacion() {
     // Recoger los datos del formulario
     const campoNombre = document.getElementById('nombre');
     const campoEmail = document.getElementById('email');
@@ -494,9 +517,9 @@ function enviarPuntuacion() {
         tiempo_segundos: tiempoSegundos
     };
 
-    // Si el usuario está logueado (campo readonly), el nombre
+    // Si el usuario esta logueado (campo readonly), el nombre
     // viene pre-rellenado desde PHP ($_SESSION) y no necesita
-    // validación adicional del nombre en el cliente.
+    // validacion adicional del nombre en el cliente.
 
     // Ocultar mensajes anteriores
     const mensajeExito = document.getElementById('mensaje-exito');
@@ -504,50 +527,65 @@ function enviarPuntuacion() {
     mensajeExito.style.display = 'none';
     if (mensajeError) mensajeError.style.display = 'none';
 
-    // fetch(): Envía una petición HTTP al servidor
-    // Parámetros:
-    //   - URL: 'php/process.php' (ruta al script PHP)
-    //   - Opciones: method, headers, body
-    
-    // method: 'POST': Envío seguro de datos 
-    // headers: Content-Type: application/json: Los datos van en formato JSON
-    // body: JSON.stringify(datos): Convierte el objeto JS a cadena JSON
-    //
-    fetch('php/process.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(datos)
-    })
-    // .then(): Se ejecuta cuando el servidor RESPONDE 
-    // response.json(): Parsea la respuesta JSON del servidor
-    .then(response => response.json())
-    // Segundo .then(): Procesa los datos parseados
-    .then(data => {
+    // CLASE 12: Indicador de carga (UX)
+    // Mostramos un spinner mientras se envia la peticion
+    // para que el usuario sepa que algo esta pasando.
+    const btnGuardar = document.querySelector('#form-puntuacion button[type="submit"]');
+    const textoOriginal = btnGuardar.textContent;
+    btnGuardar.textContent = 'Enviando...';
+    btnGuardar.disabled = true;
+
+    // CLASE 12: try/catch con async/await
+    // try: Intenta ejecutar el codigo
+    // catch: Se ejecuta si CUALQUIER linea dentro del try falla
+    // finally: Se ejecuta SIEMPRE, haya error o no
+    try {
+        // PASO 1: fetch() con await — Enviar peticion POST
+        // await PAUSA la ejecucion hasta que fetch() responda
+        // Sin await, response seria una Promesa (no los datos)
+        const response = await fetch('php/process.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        });
+
+        // Verificar respuesta HTTP
+        // response.ok es true si el codigo HTTP es 200-299
+        // IMPORTANTE: fetch() NO lanza error en codigos 400/500
+        // Solo lanza error si hay fallo de RED (servidor caido)
+        // Por eso necesitamos comprobar response.ok manualmente
+        if (!response.ok) {
+            throw new Error('Error del servidor: ' + response.status);
+        }
+
+        // PASO 2: Parsear la respuesta JSON con await
+        // response.json() tambien devuelve una Promesa
+        const data = await response.json();
         console.log('Respuesta del servidor:', data);
 
+        // PASO 3: Procesar la respuesta
         if (data.exito) {
-            // ÉXITO: Mostrar mensaje verde
+            // EXITO: Mostrar mensaje verde
             mensajeExito.textContent = data.mensaje;
             mensajeExito.style.display = 'block';
 
-            // Ocultar después de 4 segundos
+            // Ocultar despues de 4 segundos
             setTimeout(() => {
                 mensajeExito.style.display = 'none';
             }, 4000);
 
-            // Actualizar la tabla del ranking sin recargar la página
-            cargarRanking();
+            // CLASE 12: Actualizar ranking SIN recargar la pagina
+            // Esta es la esencia de AJAX: actualizacion parcial del DOM
+            await cargarRanking();
 
             // Limpiar el formulario
             document.getElementById('form-puntuacion').reset();
-            // Quitar estilos de validación
+            // Quitar estilos de validacion
             ['nombre', 'email', 'password'].forEach(id => {
                 const input = document.getElementById(id);
                 if (input) {
-                    // Si el campo es readonly (usuario logueado),
-                    // restaurar su valor desde la sesión
                     if (input.hasAttribute('readonly')) {
                         input.value = input.defaultValue;
                     }
@@ -558,7 +596,7 @@ function enviarPuntuacion() {
             });
 
         } else {
-            // ERROR del servidor: Mostrar mensaje rojo
+            // ERROR del servidor (validacion, etc.)
             if (mensajeError) {
                 mensajeError.textContent = data.mensaje;
                 mensajeError.style.display = 'block';
@@ -567,15 +605,24 @@ function enviarPuntuacion() {
                 }, 5000);
             }
         }
-    })
-    // .catch(): Se ejecuta si hay un ERROR de red (servidor caído, etc.)
-    .catch(error => {
-        console.error('Error de red:', error);
+
+    } catch (error) {
+        // catch: Captura CUALQUIER error:
+        //   - Error de red (servidor caido, sin internet)
+        //   - Error HTTP (response.ok = false)
+        //   - Error de parseo JSON
+        console.error('Error en enviarPuntuacion:', error);
         if (mensajeError) {
-            mensajeError.textContent = 'Error de conexión con el servidor. ¿Está XAMPP ejecutándose?';
+            mensajeError.textContent = 'Error de conexion con el servidor. ¿Esta XAMPP ejecutandose?';
             mensajeError.style.display = 'block';
         }
-    });
+
+    } finally {
+        // finally: Se ejecuta SIEMPRE (exito o error)
+        // Restauramos el boton a su estado original
+        btnGuardar.textContent = textoOriginal;
+        btnGuardar.disabled = false;
+    }
 }
 
 
@@ -588,46 +635,83 @@ function enviarPuntuacion() {
 //   1. Al cargar la página
 //   2. Después de guardar una nueva puntuación
 
-function cargarRanking() {
-    fetch('php/get_ranking.php')
-    .then(response => response.json())
-    .then(data => {
+
+//  CLASE 12: cargarRanking() con async/await
+
+// Solicitud GET asincrona al servidor.
+//
+// GET vs POST:
+//   GET: Solicitar/obtener datos (cargarRanking)
+//   POST: Enviar/crear datos (enviarPuntuacion)
+//
+// Flujo AJAX completo:
+//   1. JS llama a fetch() → peticion HTTP al servidor
+//   2. PHP recibe la peticion, consulta MySQL
+//   3. PHP devuelve JSON con json_encode()
+//   4. JS recibe el JSON, actualiza el DOM (sin recargar)
+//
+// Se llama:
+//   1. Al cargar la pagina (inicializacion)
+//   2. Despues de guardar una nueva puntuacion
+//   3. Al pulsar el boton "Refrescar Ranking"
+//
+
+async function cargarRanking() {
+    // CLASE 12: Indicador de carga en la tabla
+    const tbody = document.getElementById('ranking-body');
+    const textoAnterior = tbody.innerHTML;
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;">Cargando ranking...</td></tr>';
+
+    try {
+        // PASO 1: Peticion GET con await
+        // Al no especificar method, fetch() usa GET por defecto
+        const response = await fetch('php/get_ranking.php');
+
+        // CLASE 12: Verificar que la respuesta HTTP es correcta
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+        }
+
+        // PASO 2: Parsear JSON
+        const data = await response.json();
+
+        // PASO 3: Actualizar el DOM con los datos recibidos
         if (data.exito && data.ranking) {
-            // Seleccionar el <tbody> de la tabla
-            const tbody = document.getElementById('ranking-body');
-            
             // Limpiar el contenido actual del tbody
             tbody.innerHTML = '';
 
             if (data.ranking.length === 0) {
-                // Si no hay datos, mostrar mensaje
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;">No hay puntuaciones todavía.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#999;">No hay puntuaciones todavia.</td></tr>';
                 return;
             }
 
-            // Recorrer cada puntuación y crear una fila <tr>
+            // Recorrer cada puntuacion y crear una fila <tr>
+            // ESTO ES AJAX: Actualizamos PARTE de la pagina sin recargar TODA
             data.ranking.forEach((item, indice) => {
-                // document.createElement(): Crea un elemento HTML nuevo
+                // document.createElement(): Crea un elemento HTML nuevo en memoria
                 const fila = document.createElement('tr');
-                
-                // innerHTML: Establece el contenido HTML de un elemento
-                fila.innerHTML = 
+
+                // innerHTML: Establece el contenido HTML del elemento
+                fila.innerHTML =
                     '<td>' + (indice + 1) + '</td>' +
                     '<td>' + item.nombre + '</td>' +
                     '<td>' + item.fichas_restantes + '</td>' +
                     '<td>' + item.movimientos + '</td>' +
                     '<td>' + item.tiempo + '</td>' +
                     '<td>' + item.puntuacion + '</td>';
-                
-                // appendChild(): Añade el elemento como hijo del tbody
+
+                // appendChild(): Anade el elemento como hijo del tbody
                 tbody.appendChild(fila);
             });
+
+            console.log('Ranking actualizado: ' + data.ranking.length + ' entradas');
         }
-    })
-    .catch(error => {
+
+    } catch (error) {
+        // Si hay error, restaurar contenido anterior o mostrar mensaje
         console.log('No se pudo cargar el ranking:', error.message);
-        // No mostrar error al usuario, el ranking PHP ya está cargado
-    });
+        tbody.innerHTML = textoAnterior || '<tr><td colspan="6" style="text-align:center;color:#999;">Error al cargar ranking</td></tr>';
+    }
 }
 
 // EVENT LISTENERS: Conectar HTML con JavaScript
@@ -701,3 +785,59 @@ document.getElementById('password').addEventListener('blur', () => {
     }
     validarPassword();
 });
+
+
+
+//  CLASE 11: Menu Hamburguesa (UD6 §3 - Diseno Responsivo)
+
+// classList.toggle(): Anade la clase si NO esta, la quita si SI esta
+// Esto permite alternar el menu abierto/cerrado con un solo metodo.
+// aria-expanded: Atributo de accesibilidad (UD6 §3)
+//   Indica a lectores de pantalla si el menu esta abierto o cerrado.
+
+const btnHamburguesa = document.getElementById('btn-hamburguesa');
+const navLinks = document.getElementById('nav-links');
+
+if (btnHamburguesa && navLinks) {
+    btnHamburguesa.addEventListener('click', () => {
+        btnHamburguesa.classList.toggle('activo');
+        navLinks.classList.toggle('activo');
+        const estaAbierto = navLinks.classList.contains('activo');
+        btnHamburguesa.setAttribute('aria-expanded', estaAbierto);
+    });
+
+    // Cerrar menu al hacer clic en un enlace (navegacion)
+    navLinks.querySelectorAll('a').forEach(enlace => {
+        enlace.addEventListener('click', () => {
+            btnHamburguesa.classList.remove('activo');
+            navLinks.classList.remove('activo');
+            btnHamburguesa.setAttribute('aria-expanded', 'false');
+        });
+    });
+}
+
+
+
+//  CLASE 12: Boton Refrescar Ranking 
+
+// Permite al usuario actualizar el ranking manualmente
+// sin necesidad de recargar toda la pagina.
+// Esto demuestra la potencia de AJAX: carga parcial de datos.
+
+const btnRefrescar = document.getElementById('btn-refrescar-ranking');
+if (btnRefrescar) {
+    btnRefrescar.addEventListener('click', async () => {
+        // Cambiar texto mientras carga (feedback visual)
+        btnRefrescar.textContent = 'Actualizando...';
+        btnRefrescar.disabled = true;
+
+        // await: Espera a que cargarRanking() termine
+        await cargarRanking();
+
+        // Restaurar boton
+        btnRefrescar.textContent = 'Refrescar Ranking';
+        btnRefrescar.disabled = false;
+    });
+}
+
+console.log('Clase 12: async/await y Fetch API avanzado cargados');
