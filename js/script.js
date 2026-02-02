@@ -481,14 +481,22 @@ function validarFormulario(evento) {
 
 function enviarPuntuacion() {
     // Recoger los datos del formulario
+    const campoNombre = document.getElementById('nombre');
+    const campoEmail = document.getElementById('email');
+    const campoPassword = document.getElementById('password');
+
     const datos = {
-        nombre: document.getElementById('nombre').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        password: document.getElementById('password').value,
+        nombre: campoNombre.value.trim(),
+        email: campoEmail ? campoEmail.value.trim() : '',
+        password: campoPassword ? campoPassword.value : '',
         fichas_restantes: fichasRestantes,
         movimientos: movimientos,
         tiempo_segundos: tiempoSegundos
     };
+
+    // Si el usuario está logueado (campo readonly), el nombre
+    // viene pre-rellenado desde PHP ($_SESSION) y no necesita
+    // validación adicional del nombre en el cliente.
 
     // Ocultar mensajes anteriores
     const mensajeExito = document.getElementById('mensaje-exito');
@@ -537,7 +545,14 @@ function enviarPuntuacion() {
             // Quitar estilos de validación
             ['nombre', 'email', 'password'].forEach(id => {
                 const input = document.getElementById(id);
-                input.classList.remove('input-valido', 'input-error');
+                if (input) {
+                    // Si el campo es readonly (usuario logueado),
+                    // restaurar su valor desde la sesión
+                    if (input.hasAttribute('readonly')) {
+                        input.value = input.defaultValue;
+                    }
+                    input.classList.remove('input-valido', 'input-error');
+                }
                 const span = document.getElementById('error-' + id);
                 if (span) span.textContent = '';
             });
