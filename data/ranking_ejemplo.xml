@@ -1,0 +1,42 @@
+{
+    "descripcion": "Ejemplo de datos de ranking en formato JSON ",
+    "formato": "JSON (JavaScript Object Notation)",
+    "ventajas": [
+        "Ligero y eficiente - menos caracteres que XML",
+        "Sintaxis idéntica a objetos de JavaScript",
+        "Formato preferido en APIs REST y aplicaciones web",
+        "Compatible con prácticamente todos los lenguajes"
+    ],
+    "uso_en_proyecto": {
+        "enviar_puntuacion": "fetch('php/process.php', { body: JSON.stringify(datos) })",
+        "recibir_ranking": "fetch('php/get_ranking.php').then(res => res.json())",
+        "php_codificar": "echo json_encode($resultado)",
+        "php_decodificar": "json_decode(file_get_contents('php://input'), true)"
+    },
+    "ranking": [
+        {
+            "posicion": 1,
+            "jugador": "Ana García",
+            "fichas_restantes": 1,
+            "movimientos": 13,
+            "tiempo_segundos": 120,
+            "puntuacion": 9500
+        },
+        {
+            "posicion": 2,
+            "jugador": "Carlos López",
+            "fichas_restantes": 1,
+            "movimientos": 15,
+            "tiempo_segundos": 180,
+            "puntuacion": 8200
+        },
+        {
+            "posicion": 3,
+            "jugador": "María Ruiz",
+            "fichas_restantes": 2,
+            "movimientos": 12,
+            "tiempo_segundos": 95,
+            "puntuacion": 7800
+        }
+    ]
+}
