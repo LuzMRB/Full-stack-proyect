@@ -60,7 +60,7 @@ El juego consiste en un tablero triangular con **15 posiciones** dispuestas en 5
 | **UD2** — HTML y CSS | HTML5, CSS3 | Estructura semántica del sitio (`header`, `nav`, `main`, `section`, `footer`). Estilos con CSS Custom Properties, Flexbox, Grid y animaciones con `@keyframes`. |
 | **UD3** — JavaScript y DOM | JavaScript ES6+ | Lógica del juego implementada con clases. Manipulación dinámica del DOM, manejo de eventos (`click`, `submit`, `keydown`) y validación de formularios. |
 | **UD4** — PHP y MySQL | PHP 8, MySQL, SQL | Backend con PHP para procesar solicitudes. Base de datos MySQL para almacenar puntuaciones. Consultas con `prepared statements` para prevenir SQL Injection. |
-| **UD5** — PHP Orientado a Objetos | PHP (POO) | Clase `Puntuacion` con encapsulación (propiedades `private`, getters/setters con validación). Clase `Database` con patrón Singleton. Clase `APIController` para gestionar la API. |
+| **UD5** — PHP OOP y Node.js | PHP (POO), Node.js, Express.js, npm | Refactorización del backend PHP con Programación Orientada a Objetos: clases `Modelo`, `Usuario` y `Puntuacion` con herencia y encapsulación. Reimplementación de la API con Node.js y Express.js conectando a MySQL. |
 | **UD6** — AJAX y Diseño Responsivo | Fetch API, JSON, CSS Media Queries | Comunicación asíncrona con el servidor mediante `fetch()` y `async/await`. Intercambio de datos en formato JSON. Diseño adaptable con media queries en 3 breakpoints (1024px, 768px, 480px). |
 
 ---
@@ -76,16 +76,31 @@ El juego consiste en un tablero triangular con **15 posiciones** dispuestas en 5
 ##  Estructura del Proyecto
 
 ```
-solitario_triangular/
-├── index.html              ← Página principal (HTML5 semántico)
+Full_stack_proyect/
+├── index.php               ← Página principal (session_start, nav condicional)
+├── index.html              ← Página original HTML5
 ├── css/
 │   └── style.css           ← Estilos, responsive design y animaciones
 ├── js/
 │   └── script.js           ← Lógica del juego, DOM, eventos, Fetch API
 ├── php/
-│   ├── config.php          ← Configuración de BD (Singleton)
-│   ├── Puntuacion.php      ← Clase POO para gestionar puntuaciones
-│   └── api.php             ← API REST (endpoints JSON)
+│   ├── config.php          ← Configuración de BD (try-catch, 127.0.0.1)
+│   ├── clases/             ← NUEVO (Clase 9 - POO)
+│   │   ├── Modelo.php      ← Clase padre: conexión BD, consultas preparadas
+│   │   ├── Usuario.php     ← Clase hija: registro, login, sesiones
+│   │   └── Puntuacion.php  ← Clase hija: guardar y consultar puntuaciones
+│   ├── process.php         ← Procesar puntuación (refactorizado con POO)
+│   ├── get_ranking.php     ← Obtener ranking (refactorizado con POO)
+│   ├── registro.php        ← Registro de usuarios (refactorizado con POO)
+│   ├── login.php           ← Login de usuarios (refactorizado con POO)
+│   ├── logout.php          ← Cierre de sesión
+│   └── test_conexion.php   ← Verificar conexión a BD
+├── nodejs/                 ← NUEVO (Clase 10 - Node.js)
+│   ├── package.json        ← Dependencias npm (express, mysql2, cors, bcrypt)
+│   ├── package-lock.json   ← Versiones exactas de dependencias
+│   ├── server_basico.js    ← Servidor HTTP con módulo nativo (UD5 §4.1)
+│   ├── server.js           ← Servidor Express.js + MySQL (reimplementa API)
+│   └── .gitignore          ← Ignora node_modules/
 ├── sql/
 │   └── database.sql        ← Script de creación de la base de datos
 └── README.md               ← Este archivo
@@ -128,8 +143,152 @@ Deben aparecer todos los tests en verde.
 
 ### Paso 4: Acceder al juego
 ```
-http://127.0.0.1:5500/index.html
+http://localhost/Full_stack_proyect/index.php
 ```
+
+---
+
+## Programación Orientada a Objetos (Clase 9 — UD5 §3.4)
+
+### Refactorización a POO
+
+El backend PHP fue refactorizado de programación estructurada a **Programación Orientada a Objetos**, aplicando los conceptos de la UD5 sección 3.4 (Clases y objetos).
+
+### Diagrama de herencia
+
+```
+            Modelo (clase padre)
+           /                    \
+      Usuario                Puntuacion
+    (clase hija)            (clase hija)
+```
+
+La clase padre `Modelo` centraliza la lógica de conexión y consultas preparadas. Las clases hijas `Usuario` y `Puntuacion` heredan de ella con `extends` y añaden sus propios métodos especializados. Es el mismo patrón que el ejemplo `Animal → Perro` de la UD5, pero aplicado al proyecto real.
+
+### Conceptos POO implementados
+
+| Concepto | Dónde se aplica | Ejemplo |
+|---|---|---|
+| **class** | Modelo.php, Usuario.php, Puntuacion.php | `class Modelo { }` |
+| **Atributos** | Propiedades de cada clase | `protected $conexion`, `private $nombre` |
+| **Métodos** | Funciones dentro de las clases | `buscarPorNombre()`, `guardar()` |
+| **Constructor** | Inicialización de objetos | `public function __construct($conexion)` |
+| **$this->** | Acceso a propiedades del objeto | `$this->conexion`, `$this->tabla` |
+| **new** | Creación de objetos | `$usuario = new Usuario($conexion)` |
+| **->** (flecha) | Acceso a métodos del objeto | `$usuario->buscarPorNombre($nombre)` |
+| **extends** (herencia) | Clases hijas heredan del padre | `class Usuario extends Modelo` |
+| **parent::** | Llamar al constructor del padre | `parent::__construct($conexion, 'usuarios')` |
+| **private** (encapsulación) | Atributos solo accesibles internamente | `private $id`, `private $nombre` |
+| **protected** | Accesible en clase e hijas | `protected $conexion` |
+| **public** | Accesible desde cualquier lugar | `public function crear()` |
+| **Getters** | Lectura controlada de atributos | `getId()`, `getNombre()`, `getEmail()` |
+| **Setters** | Modificación controlada con validación | `setNombre($nombre)` |
+| **static** | Métodos sin necesidad de instancia | `Usuario::hashPassword($password)` |
+
+### Archivos de clases
+
+| Archivo | Descripción |
+|---|---|
+| `php/clases/Modelo.php` | Clase padre con conexión a BD, consultas preparadas (`consultaPreparada()`, `obtenerResultado()`, `ejecutar()`), getter de conexión. Atributos `protected` para que las hijas accedan. |
+| `php/clases/Usuario.php` | Hereda de Modelo. Métodos: `buscarPorNombre()`, `crear()`, `verificarPassword()`, `hashPassword()` (estático), `iniciarSesion()`. Atributos `private` con getters/setters. |
+| `php/clases/Puntuacion.php` | Hereda de Modelo. Métodos: `guardar()`, `obtenerRanking()`, `calcularPuntuacion()` (estático). Encapsula toda la lógica de puntuaciones. |
+
+### Archivos refactorizados
+
+| Archivo | Antes (estructurado) | Después (POO) |
+|---|---|---|
+| `php/process.php` | Consultas SQL sueltas, ~100 líneas repetidas | `$usuario = new Usuario($conexion)` + `$puntuacion->guardar()` |
+| `php/get_ranking.php` | SELECT + bucle manual | `$puntuacion->obtenerRanking(10)` (1 línea) |
+| `php/registro.php` | Consultas preparadas sueltas | `$usuario->crear()`, `Usuario::hashPassword()` |
+| `php/login.php` | password_verify directo | `$usuario->verificarPassword()`, `$usuario->iniciarSesion()` |
+
+---
+
+## Introducción a Node.js (Clase 10 — UD5 §4)
+
+### Servidor HTTP básico (módulo nativo)
+
+Se creó un servidor web básico usando **solo el módulo `http` nativo** de Node.js, siguiendo el ejemplo de la UD5 sección 4.1:
+
+```javascript
+const http = require('http');
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end('Hola desde Node.js');
+});
+server.listen(3000, '127.0.0.1');
+```
+
+El archivo `nodejs/server_basico.js` implementa:
+- `require('http')`: Importar módulo nativo
+- `http.createServer((req, res) => { })`: Crear servidor con función flecha
+- `res.writeHead()` y `res.end()`: Cabeceras y cuerpo de respuesta
+- `req.on('data')` y `req.on('end')`: Lectura de datos POST
+- `server.listen(3000)`: Poner el servidor a escuchar
+
+### Servidor Express.js + MySQL (reimplementación de API)
+
+Se reimplementó parte del backend PHP usando **Express.js** como framework y **mysql2** para la conexión a la base de datos. Ambos servidores (PHP en puerto 80 y Node.js en puerto 3000) conectan a la **misma base de datos** `solitario_db`.
+
+**Endpoints reimplementados:**
+
+| Método | Ruta Node.js | Equivalente PHP | Descripción |
+|---|---|---|---|
+| GET | `/api/estado` | — | Estado del servidor y conexión BD |
+| GET | `/api/ranking` | `get_ranking.php` | Ranking de mejores puntuaciones |
+| POST | `/api/puntuacion` | `process.php` | Guardar nueva puntuación |
+
+**Equivalencias PHP → Node.js:**
+
+| PHP | Node.js | Descripción |
+|---|---|---|
+| `json_decode()` / `json_encode()` | `JSON.parse()` / `JSON.stringify()` | Parseo de JSON |
+| `password_hash()` | `bcrypt.hash()` | Hash de contraseñas |
+| `password_verify()` | `bcrypt.compare()` | Verificar contraseñas |
+| `mysqli_prepare()` + `bind_param()` | `pool.query('...?', [params])` | Consultas preparadas |
+| `mysqli_insert_id()` | `resultado.insertId` | Último ID insertado |
+| `require_once` | `require()` | Importar módulos |
+| Apache (XAMPP) | Express.js | Servidor web |
+| Composer | npm | Gestor de paquetes |
+
+### npm y gestión de paquetes (UD5 §4.1)
+
+El proyecto Node.js usa **npm** (Node Package Manager) para gestionar dependencias:
+
+| Paquete | Versión | Descripción |
+|---|---|---|
+| `express` | ^4.18.2 | Framework web (rutas, middleware) |
+| `mysql2` | ^3.6.0 | Conector MySQL con soporte async/await |
+| `cors` | ^2.8.5 | Permitir peticiones cross-origin |
+| `bcrypt` | ^5.1.1 | Hash seguro de contraseñas |
+
+### Cómo ejecutar el servidor Node.js
+
+```bash
+# Servidor básico (sin dependencias)
+cd nodejs
+node server_basico.js
+# Abrir http://127.0.0.1:3000
+
+# Servidor Express + MySQL
+cd nodejs
+npm install          # Solo la primera vez
+node server.js
+# Abrir http://127.0.0.1:3000/api/ranking
+```
+
+### PHP vs Node.js
+
+| Aspecto | PHP (XAMPP) | Node.js |
+|---|---|---|
+| Servidor | Apache (incluido en XAMPP) | Node.js es su propio servidor |
+| Puerto | 80 (por defecto) | 3000 (configurable) |
+| Ejecución | Cada petición = nuevo proceso | Event loop (un solo proceso) |
+| Lenguaje | PHP | JavaScript (mismo del frontend) |
+| Base de datos | mysqli extension | mysql2 package |
+| Paquetes | Composer | npm |
+
+---
 
 ## Conceptos UD4/UD5 Aplicados
 
@@ -153,7 +312,7 @@ http://127.0.0.1:5500/index.html
 - `mysqli_stmt_execute()`: ejecuta consultas preparadas
 - `mysqli_close()`: cierra la conexión
 
-### Seguridad 
+### Seguridad
 - **Consultas preparadas**: previenen inyección SQL
 - **password_hash()**: hasheo seguro de contraseñas (bcrypt)
 - **password_verify()**: verificación de contraseñas
@@ -197,7 +356,7 @@ http://127.0.0.1:5500/index.html
 | `php/login.php` | Login con password_verify() y $_SESSION |
 | `php/logout.php` | Cierre de sesión con session_destroy() |
 
-### Conceptos de Seguridad Implementados 
+### Conceptos de Seguridad Implementados
 
 **Prevención de Inyección SQL:**
 - Todas las consultas usan `mysqli_prepare()` + `mysqli_stmt_bind_param()`
@@ -228,22 +387,5 @@ http://127.0.0.1:5500/index.html
 - Registro: `http://localhost/Full_stack_proyect/php/registro.php`
 - Login: `http://localhost/Full_stack_proyect/php/login.php`
 - Juego: `http://localhost/Full_stack_proyect/index.php`
-
-Full_stack_proyect/
-├── index.php          ← MODIFICADO (session_start, nav, auto-fill)
-├── index.html         ← Sin cambios
-├── css/
-│   └── style.css      ← Sin cambios
-├── js/
-│   └── script.js      ← MODIFICADO (1 cambio menor)
-├── php/
-│   ├── config.php     ← Sin cambios
-│   ├── process.php    ← Sin cambios
-│   ├── get_ranking.php ← Sin cambios
-│   ├── test_conexion.php ← Sin cambios
-│   ├── registro.php   ← NUEVO (Clase 8)
-│   ├── login.php      ← NUEVO (Clase 8)
-│   └── logout.php     ← NUEVO (Clase 8)
-├── sql/
-│   └── database.sql   ← Sin cambios
-└── README.md          ← MODIFICADO (nueva sección)
+- API Node.js: `http://127.0.0.1:3000/`
+- Ranking Node.js: `http://127.0.0.1:3000/api/ranking`
