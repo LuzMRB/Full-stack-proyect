@@ -5,7 +5,7 @@
 
 
 //   - mysqli_connect(): Establece conexión con MySQL.
-//     Parámetros: host, usuario, contraseña, base de datos.
+//     Parámetros: host, usuario, contraseña, base de datos, puerto.
 //   - mysqli_connect_error(): Devuelve el error de conexión.
 //   - mysqli_set_charset(): Establece la codificación de caracteres.
 
@@ -14,7 +14,7 @@
 // En PHP, las variables empiezan con $ 
 // Credenciales por defecto de XAMPP.
 
-$servidor = "localhost";
+$servidor = "127.0.0.1";
 $usuario = "root";
 $clave = "";
 $baseDatos = "solitario_db";
@@ -22,9 +22,20 @@ $baseDatos = "solitario_db";
 
 // 2. ESTABLECER LA CONEXIÓN
 // mysqli_connect(): Conecta PHP con MySQL 
-// Recibe: host, usuario, clave, base de datos.
+// Recibe: host, usuario, clave, base de datos, puerto.
+// Puerto 3306: Puerto por defecto de MySQL.
+// Se especifica explícitamente para forzar conexión TCP
+// en Mac, donde el socket Unix puede no encontrarse.
 
-$conexion = mysqli_connect($servidor, $usuario, $clave, $baseDatos);
+// try-catch: En PHP 8+, mysqli_connect() lanza una excepción
+// (mysqli_sql_exception) si falla, en vez de devolver false.
+// Sin try-catch, la excepción no se captura y PHP muestra error 500.
+
+try {
+    $conexion = mysqli_connect($servidor, $usuario, $clave, $baseDatos, 3306);
+} catch (mysqli_sql_exception $e) {
+    die("Error de conexión a la base de datos: " . $e->getMessage());
+}
 
 
 // 3. VERIFICAR LA CONEXIÓN
