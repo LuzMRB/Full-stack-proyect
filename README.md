@@ -228,3 +228,22 @@ http://127.0.0.1:5500/index.html
 - Registro: `http://localhost/Full_stack_proyect/php/registro.php`
 - Login: `http://localhost/Full_stack_proyect/php/login.php`
 - Juego: `http://localhost/Full_stack_proyect/index.php`
+
+Full_stack_proyect/
+├── index.php          ← MODIFICADO (session_start, nav, auto-fill)
+├── index.html         ← Sin cambios
+├── css/
+│   └── style.css      ← Sin cambios
+├── js/
+│   └── script.js      ← MODIFICADO (1 cambio menor)
+├── php/
+│   ├── config.php     ← Sin cambios
+│   ├── process.php    ← Sin cambios
+│   ├── get_ranking.php ← Sin cambios
+│   ├── test_conexion.php ← Sin cambios
+│   ├── registro.php   ← NUEVO (Clase 8)
+│   ├── login.php      ← NUEVO (Clase 8)
+│   └── logout.php     ← NUEVO (Clase 8)
+├── sql/
+│   └── database.sql   ← Sin cambios
+└── README.md          ← MODIFICADO (nueva sección)
