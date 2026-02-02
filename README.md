@@ -620,6 +620,121 @@ node server.js
 
 ---
 
+## AJAX y Fetch API Avanzado (Clase 12 — UD6 §5)
+
+### ¿Qué es AJAX?
+
+AJAX (Asynchronous JavaScript and XML) es una técnica que permite **actualizar partes de la página sin recargarla completamente**. En nuestro proyecto, el ranking se carga y actualiza dinámicamente sin que el usuario pierda el estado del juego.
+
+### Funcionalidades implementadas con Fetch API
+
+| Funcionalidad | Método HTTP | Endpoint PHP | Descripción |
+|---|---|---|---|
+| **Cargar ranking** | GET | `php/get_ranking.php` | Obtiene las 10 mejores puntuaciones |
+| **Guardar puntuación** | POST | `php/process.php` | Envía datos del formulario al servidor |
+| **Refrescar ranking** | GET | `php/get_ranking.php` | Actualiza la tabla sin recargar |
+
+### Evolución: de `.then()` (Clase 7) a `async/await` (Clase 12)
+
+**Versión Clase 7 — Cadena de `.then()`:**
+```javascript
+fetch('php/get_ranking.php')
+    .then(response => response.json())
+    .then(data => { /* procesar */ })
+    .catch(error => { /* manejar error */ });
+```
+
+**Versión Clase 12 — `async/await`:**
+```javascript
+async function cargarRanking() {
+    try {
+        const response = await fetch('php/get_ranking.php');
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const data = await response.json();
+        // procesar data
+    } catch (error) {
+        // manejar error
+    }
+}
+```
+
+**Ventajas de `async/await`:**
+- El código se lee de arriba a abajo (como código síncrono)
+- `try/catch` captura todos los errores (red, HTTP, parseo)
+- `response.ok` detecta errores HTTP que `.then()` no captura
+- Se pueden encadenar varias llamadas con `await` secuenciales
+
+### Indicador de carga (UX)
+
+Se añadió feedback visual para que el usuario sepa que la petición está en curso:
+
+```javascript
+// Mientras se envía
+btnGuardar.textContent = 'Enviando...';
+btnGuardar.disabled = true;
+
+// Al terminar (finally)
+btnGuardar.textContent = textoOriginal;
+btnGuardar.disabled = false;
+```
+
+### Botón Refrescar Ranking
+
+Se añadió un botón que permite actualizar la tabla de ranking **sin recargar la página**, demostrando la esencia de AJAX:
+
+```javascript
+btnRefrescar.addEventListener('click', async () => {
+    btnRefrescar.textContent = 'Actualizando...';
+    await cargarRanking();  // Petición GET asíncrona
+    btnRefrescar.textContent = 'Refrescar Ranking';
+});
+```
+
+### Flujo completo AJAX en el proyecto
+
+```
+┌─────────────────┐   fetch() POST    ┌──────────────────┐
+│   FRONTEND      │ ────────────────→  │    BACKEND        │
+│   (JavaScript)  │                    │    (PHP/Node.js)  │
+│                 │   JSON response    │                   │
+│  1. Recoger     │ ←──────────────── │  3. Validar       │
+│     datos form  │                    │     datos         │
+│  2. JSON.       │                    │  4. Consultar     │
+│     stringify() │                    │     MySQL         │
+│  5. Actualizar  │                    │  5. json_encode() │
+│     DOM         │                    │     respuesta     │
+└─────────────────┘                    └──────────────────┘
+
+Ejemplo flujo GET (cargar ranking):
+  JS: await fetch('php/get_ranking.php')
+  PHP: SELECT ... FROM puntuaciones → json_encode($ranking)
+  JS: data = await response.json() → forEach → appendChild()
+
+Ejemplo flujo POST (guardar puntuación):
+  JS: await fetch('php/process.php', { method: 'POST', body: JSON.stringify(datos) })
+  PHP: json_decode(php://input) → INSERT INTO → json_encode(['exito' => true])
+  JS: data = await response.json() → mostrar mensaje → await cargarRanking()
+```
+
+### Conceptos AJAX/Fetch aplicados (UD6 §5)
+
+| Concepto | Implementación | Archivo |
+|---|---|---|
+| `fetch()` GET | `await fetch('php/get_ranking.php')` | script.js |
+| `fetch()` POST | `await fetch('php/process.php', {method:'POST'...})` | script.js |
+| `async/await` | `async function cargarRanking()` | script.js |
+| `response.ok` | `if (!response.ok) throw new Error(...)` | script.js |
+| `response.json()` | `const data = await response.json()` | script.js |
+| `JSON.stringify()` | `body: JSON.stringify(datos)` | script.js |
+| `try/catch/finally` | Manejo completo de errores | script.js |
+| `json_encode()` | `echo json_encode(['exito' => true])` | process.php |
+| `json_decode()` | `json_decode(file_get_contents('php://input'))` | process.php |
+| Indicador de carga | `btnGuardar.textContent = 'Enviando...'` | script.js |
+| Actualización parcial DOM | `createElement('tr')` + `appendChild()` | script.js |
+| `preventDefault()` | Envío de formulario sin recargar | script.js |
+
+---
+
 ## Conceptos UD4/UD5 Aplicados
 
 ### PHP Básico
