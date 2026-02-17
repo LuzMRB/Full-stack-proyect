@@ -15,23 +15,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Juego del Solitario  - Proyecto Full Stack para Ingeniería Web I">
+    <meta name="description" content="Peg Jump - Juego clásico de fichas - Proyecto Full Stack para Ingeniería Web I">
     <meta name="author" content="Luz Rubio Bolger">
-    <title>Solitario | Luz Rubio Bolger</title>
+    <title>Peg Jump | Luz Rubio Bolger</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
+    <!-- Capa puntitos negros (patrón visible sobre beige) -->
+    <div class="bg-dots" aria-hidden="true"></div>
 
     <!-- HEADER -->
     <header>
         <div class="container">
-            <h1> Solitario </h1>
+            <h1>Peg Jump</h1>
             <p class="subtitulo">¿Podrás resolver este puzle?</p>
             <nav>
-                <ul class="nav-links">
+                <ul class="nav-links" id="nav-links">
                     <li><a href="#juego">Juego</a></li>
-                    <li><a href="#reglas">Reglas</a></li>
+                    <li><a href="#" id="nav-reglas">Reglas</a></li>
                 </ul>
             </nav>
         </div>
@@ -98,15 +100,25 @@
 
             <!-- Botones de control -->
             <div class="controles">
-                <button id="btn-reiniciar" class="btn btn-primary">Reiniciar</button>
-                <button id="btn-deshacer" class="btn btn-secondary">Deshacer</button>
-                <button id="btn-pista" class="btn btn-secondary">Pista</button>
+                <button id="btn-reiniciar" class="control-btn" aria-label="Reiniciar partida">
+                    <span class="control-icon">↺</span>
+                </button>
+                <button id="btn-deshacer" class="control-btn" aria-label="Deshacer último movimiento">
+                    <span class="control-icon">↶</span>
+                </button>
+                <button id="btn-pista" class="control-btn" aria-label="Pista">
+                    <span class="control-icon">?</span>
+                </button>
             </div>
         </section>
 
-        <!-- SECCIÓN 2: Reglas del Juego -->
-        <section id="reglas">
-            <h2>Reglas del Juego</h2>
+    </main>
+
+    <!-- Modal de Reglas -->
+    <div id="rules-modal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+            <button class="modal-close" type="button" aria-label="Cerrar reglas">×</button>
+            <h2 id="rules-title">Reglas del Juego</h2>
             <div class="reglas-grid">
                 <div class="regla-card">
                     <h3>1. Objetivo</h3>
@@ -125,13 +137,12 @@
                     <p>La partida termina cuando no quedan movimientos posibles.</p>
                 </div>
             </div>
-        </section>
-
-    </main>
+        </div>
+    </div>
 
     <!-- FOOTER -->
     <footer>
-        <p>&copy; 2025 Solitario — Luz Rubio Bolger — UAX</p>
+        <p>&copy; 2025 Peg Jump — Luz Rubio Bolger — UAX</p>
         <p>Proyecto de Ingeniería Web I</p>
     </footer>
 

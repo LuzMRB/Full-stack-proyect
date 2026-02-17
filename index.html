@@ -20,13 +20,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Meta descripción: útil para SEO (que Google entienda de qué va la página) -->
-    <meta name="description" content="Juego de Solitario Triangular - Proyecto Full Stack para Ingeniería Web I">
+    <meta name="description" content="Peg Jump - Juego clásico de fichas - Proyecto Full Stack para Ingeniería Web I">
 
     <!-- Autor de la página -->
     <meta name="author" content="Luz Rubio Bolger">
 
     <!-- Título: aparece en la pestaña del navegador -->
-    <title>Solitario Triangular | Luz Rubio Bolger</title>
+    <title>Peg Jump | Luz Rubio Bolger</title>
 
     <!-- 
         Enlace al archivo CSS EXTERNO.
@@ -38,10 +38,8 @@
 </head>
 
 <body>
-    <!-- 
-        <body>: Contiene TODO el contenido VISIBLE de la página.
-        Aquí van los textos, imágenes, formularios, el juego, etc.
-    -->
+    <!-- Capa puntitos negros (patrón visible sobre beige) -->
+    <div class="bg-dots" aria-hidden="true"></div>
 
     <!-- 
          HEADER: Encabezado de la página
@@ -51,7 +49,7 @@
     <header>
         <div class="container">
             <!-- h1: Título principal de la página  -->
-            <h1> Solitario </h1>
+            <h1><span class="title-peg">Peg</span> <span class="title-jump">Jump</span></h1>
             <p class="subtitulo">¿Podrás resolver este puzle?</p>
 
             <!-- NAV: Etiqueta semántica para la NAVEGACIÓN -->
@@ -61,9 +59,9 @@
                     Los href="#seccion" son enlaces internos (anclas)
                     que llevan a las secciones de la misma página.
                 -->
-                <ul class="nav-links">
+                <ul class="nav-links" id="nav-links">
                     <li><a href="#juego">Juego</a></li>
-                    <li><a href="#reglas">Reglas</a></li>
+                    <li><a href="#" id="nav-reglas">Reglas</a></li>
                 </ul>
             </nav>
         </div>
@@ -150,24 +148,27 @@
                 </div>
             </div>
 
-            <!-- Botones de control del juego -->
+            <!-- Botones de control del juego (diadema: Deshacer | Reiniciar | Pista) -->
             <div class="controles">
-                <button id="btn-reiniciar" class="btn btn-primary">Reiniciar</button>
-                <button id="btn-deshacer" class="btn btn-secondary">Deshacer</button>
-                <button id="btn-pista" class="btn btn-secondary">Pista</button>
+                <button id="btn-deshacer" class="control-btn control-btn-sec" aria-label="Deshacer último movimiento">
+                    <span class="control-icon">↶</span>
+                </button>
+                <button id="btn-reiniciar" class="control-btn control-btn-primary" aria-label="Reiniciar partida">
+                    <span class="control-icon">↺</span>
+                </button>
+                <button id="btn-pista" class="control-btn control-btn-sec" aria-label="Pista">
+                    <span class="control-icon">?</span>
+                </button>
             </div>
         </section>
 
-        <!-- 
-             SECCIÓN 2: Reglas del Juego
- -->
-        <section id="reglas">
-            <h2>Reglas del Juego</h2>
+    </main>
 
-            <!-- 
-                Usamos <div> con clases para crear tarjetas.
-                Las tarjetas se organizarán en grid con CSS.
-            -->
+    <!-- Modal de Reglas -->
+    <div id="rules-modal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+            <button class="modal-close" type="button" aria-label="Cerrar reglas">×</button>
+            <h2 id="rules-title">Reglas del Juego</h2>
             <div class="reglas-grid">
                 <div class="regla-card">
                     <h3>1. Objetivo</h3>
@@ -186,9 +187,8 @@
                     <p>La partida termina cuando no quedan movimientos posibles.</p>
                 </div>
             </div>
-        </section>
-
-    </main>
+        </div>
+    </div>
 
     <!-- 
          FOOTER: Pie de página.
@@ -196,7 +196,7 @@
          copyright, créditos, contacto, etc.
 -->
     <footer>
-        <p>&copy; 2025 Solitario — Luz Rubio Bolger — UAX</p>
+        <p>&copy; 2025 Peg Jump — Luz Rubio Bolger — UAX</p>
         <p>Proyecto de Ingeniería Web I</p>
     </footer>
 

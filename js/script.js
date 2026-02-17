@@ -357,7 +357,7 @@ btnPista.addEventListener('click', mostrarPista);
 
 // INICIALIZACIÓN — Se ejecuta al cargar la página
 inicializarJuego();
-console.log('Solitario — JS cargado correctamente');
+console.log('Peg Jump — JS cargado correctamente');
 
 //  CLASE 11: Menu Hamburguesa (UD6 §3 - Diseno Responsivo)
 
@@ -384,6 +384,53 @@ if (btnHamburguesa && navLinks) {
             navLinks.classList.remove('activo');
             btnHamburguesa.setAttribute('aria-expanded', 'false');
         });
+    });
+}
+
+// Modal de Reglas
+const rulesModal = document.getElementById('rules-modal');
+const navReglas = document.getElementById('nav-reglas');
+const modalClose = document.querySelector('.modal-close');
+
+function openRulesModal() {
+    if (rulesModal) {
+        rulesModal.classList.add('is-open');
+        rulesModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeRulesModal() {
+    if (rulesModal) {
+        rulesModal.classList.remove('is-open');
+        rulesModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+}
+
+if (navReglas) {
+    navReglas.addEventListener('click', (e) => {
+        e.preventDefault();
+        openRulesModal();
+    });
+}
+
+if (modalClose) {
+    modalClose.addEventListener('click', closeRulesModal);
+}
+
+if (rulesModal) {
+    rulesModal.addEventListener('click', (e) => {
+        if (e.target === rulesModal) {
+            closeRulesModal();
+        }
+    });
+    
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && rulesModal.classList.contains('is-open')) {
+            closeRulesModal();
+        }
     });
 }
 
