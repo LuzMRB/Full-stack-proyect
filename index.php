@@ -35,16 +35,16 @@
     <!-- HEADER -->
     <header>
         <div class="container">
-            <h1>Peg Jump</h1>
-            <p class="subtitulo">¿Podrás resolver este puzle?</p>
-            <nav>
-                <ul class="nav-links" id="nav-links">
-                    <li><a href="#juego">Juego</a></li>
-                    <li><a href="#" id="nav-reglas">Reglas</a></li>
-                </ul>
-            </nav>
+            <h1><span class="title-peg">Peg</span><span class="title-jump">Jump</span></h1>
         </div>
     </header>
+    <p class="subtitulo">¿Podrás resolver este puzle?</p>
+    <nav>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#juego">Juego</a></li>
+            <li><a href="#" id="nav-reglas">Reglas</a></li>
+        </ul>
+    </nav>
 
     <!-- MAIN -->
     <main>
@@ -128,19 +128,19 @@
             <h2 id="rules-title">Reglas del Juego</h2>
             <div class="reglas-grid">
                 <div class="regla-card">
-                    <h3>1. Objetivo</h3>
+                    <h3><span class="regla-num">01</span><span class="regla-title">Objetivo</span></h3>
                     <p>Eliminar todas las fichas del tablero hasta dejar solo una.</p>
                 </div>
                 <div class="regla-card">
-                    <h3>2. Movimiento</h3>
+                    <h3><span class="regla-num">02</span><span class="regla-title">Movimiento</span></h3>
                     <p>Una ficha salta sobre otra adyacente y aterriza en un hueco vacío.</p>
                 </div>
                 <div class="regla-card">
-                    <h3>3. Captura</h3>
+                    <h3><span class="regla-num">03</span><span class="regla-title">Captura</span></h3>
                     <p>La ficha saltada se elimina del tablero automáticamente.</p>
                 </div>
                 <div class="regla-card">
-                    <h3>4. Fin</h3>
+                    <h3><span class="regla-num">04</span><span class="regla-title">Fin</span></h3>
                     <p>La partida termina cuando no quedan movimientos posibles.</p>
                 </div>
             </div>
