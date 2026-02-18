@@ -201,6 +201,63 @@ header {
     z-index: 1;
 }
 
+header .container {
+    text-align: center;
+}
+
+/* Language toggle — pill style, top-right (pushed out) */
+.lang-selector {
+    position: absolute;
+    right: -120px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    height: 30px;
+    padding: 0 10px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.lang-selector a {
+    text-decoration: none;
+    padding: 0 4px;
+    color: #6B7280;
+    transition: color 0.2s ease;
+}
+
+.lang-selector a:hover {
+    color: var(--green-mid);
+}
+
+.lang-selector a.active {
+    background: linear-gradient(135deg, var(--green-forest), var(--green-mid));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lang-selector a.active:hover {
+    background: linear-gradient(135deg, var(--green-forest), var(--green-mid), var(--green-lime));
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.lang-sep {
+    color: rgba(107, 114, 128, 0.5);
+    font-weight: 400;
+    font-size: 0.75em;
+    user-select: none;
+}
+
 main {
     position: relative;
     z-index: 1;

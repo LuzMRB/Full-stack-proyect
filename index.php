@@ -36,13 +36,18 @@
     <header>
         <div class="container">
             <h1><span class="title-peg">Peg</span><span class="title-jump">Jump</span></h1>
+            <div class="lang-selector">
+                <a href="#" data-lang="es" class="active">ES</a>
+                <span class="lang-sep">|</span>
+                <a href="#" data-lang="en">EN</a>
+            </div>
         </div>
     </header>
-    <p class="subtitulo">¿Podrás resolver este puzle?</p>
+    <p class="subtitulo" data-i18n="subtitle">¿Podrás resolver este puzle?</p>
     <nav>
         <ul class="nav-links" id="nav-links">
-            <li><a href="#juego">Juego</a></li>
-            <li><a href="#" id="nav-reglas">Reglas</a></li>
+            <li><a href="#juego" data-i18n="navGame">Juego</a></li>
+            <li><a href="#" id="nav-reglas" data-i18n="navRules">Reglas</a></li>
         </ul>
     </nav>
 
@@ -51,8 +56,8 @@
 
         <!-- SECCIÓN 1: El Juego -->
         <section id="juego">
-            <h2> Empieza a resolver</h2>
-            <p>Haz clic en una ficha y luego en un hueco para saltar y eliminar fichas.</p>
+            <h2 data-i18n="sectionTitle">Empieza a resolver</h2>
+            <p data-i18n="sectionInstructions">Haz clic en una ficha y luego en un hueco para saltar y eliminar fichas.</p>
 
             <div class="tablero-container">
                 <div class="tablero" id="tablero">
@@ -92,28 +97,28 @@
             <!-- Panel de estadísticas -->
             <div class="stats-panel">
                 <div class="stat">
-                    <span class="stat-label">Fichas restantes:</span>
+                    <span class="stat-label" data-i18n="statsPegs">Fichas restantes:</span>
                     <span class="stat-valor" id="fichas-restantes">14</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">Movimientos:</span>
+                    <span class="stat-label" data-i18n="statsMoves">Movimientos:</span>
                     <span class="stat-valor" id="movimientos">0</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-label">Tiempo:</span>
+                    <span class="stat-label" data-i18n="statsTime">Tiempo:</span>
                     <span class="stat-valor" id="tiempo">00:00</span>
                 </div>
             </div>
 
             <!-- Botones de control -->
             <div class="controles">
-                <button id="btn-reiniciar" class="control-btn" aria-label="Reiniciar partida">
+                <button id="btn-reiniciar" class="control-btn" data-i18n="ariaReset" data-i18n-attr="aria-label">
                     <span class="control-icon">↺</span>
                 </button>
-                <button id="btn-deshacer" class="control-btn" aria-label="Deshacer último movimiento">
+                <button id="btn-deshacer" class="control-btn" data-i18n="ariaUndo" data-i18n-attr="aria-label">
                     <span class="control-icon">↶</span>
                 </button>
-                <button id="btn-pista" class="control-btn" aria-label="Pista">
+                <button id="btn-pista" class="control-btn" data-i18n="ariaHint" data-i18n-attr="aria-label">
                     <span class="control-icon">?</span>
                 </button>
             </div>
@@ -124,24 +129,24 @@
     <!-- Modal de Reglas -->
     <div id="rules-modal" class="modal-overlay" aria-hidden="true">
         <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="rules-title">
-            <button class="modal-close" type="button" aria-label="Cerrar reglas">×</button>
-            <h2 id="rules-title">Reglas del Juego</h2>
+            <button class="modal-close" type="button" data-i18n="ariaCloseRules" data-i18n-attr="aria-label">×</button>
+            <h2 id="rules-title" data-i18n="rulesTitle">Reglas del Juego</h2>
             <div class="reglas-grid">
                 <div class="regla-card">
-                    <h3><span class="regla-num">01</span><span class="regla-title">Objetivo</span></h3>
-                    <p>Eliminar todas las fichas del tablero hasta dejar solo una.</p>
+                    <h3><span class="regla-num">01</span><span class="regla-title" data-i18n="rulesRule1Title">Objetivo</span></h3>
+                    <p data-i18n="rulesRule1Text">Eliminar todas las fichas del tablero hasta dejar solo una.</p>
                 </div>
                 <div class="regla-card">
-                    <h3><span class="regla-num">02</span><span class="regla-title">Movimiento</span></h3>
-                    <p>Una ficha salta sobre otra adyacente y aterriza en un hueco vacío.</p>
+                    <h3><span class="regla-num">02</span><span class="regla-title" data-i18n="rulesRule2Title">Movimiento</span></h3>
+                    <p data-i18n="rulesRule2Text">Una ficha salta sobre otra adyacente y aterriza en un hueco vacío.</p>
                 </div>
                 <div class="regla-card">
-                    <h3><span class="regla-num">03</span><span class="regla-title">Captura</span></h3>
-                    <p>La ficha saltada se elimina del tablero automáticamente.</p>
+                    <h3><span class="regla-num">03</span><span class="regla-title" data-i18n="rulesRule3Title">Captura</span></h3>
+                    <p data-i18n="rulesRule3Text">La ficha saltada se elimina del tablero automáticamente.</p>
                 </div>
                 <div class="regla-card">
-                    <h3><span class="regla-num">04</span><span class="regla-title">Fin</span></h3>
-                    <p>La partida termina cuando no quedan movimientos posibles.</p>
+                    <h3><span class="regla-num">04</span><span class="regla-title" data-i18n="rulesRule4Title">Fin</span></h3>
+                    <p data-i18n="rulesRule4Text">La partida termina cuando no quedan movimientos posibles.</p>
                 </div>
             </div>
         </div>
@@ -150,10 +155,12 @@
     <!-- FOOTER -->
     <footer>
         <p>&copy; 2025 Peg Jump — Luz Rubio Bolger — UAX</p>
-        <p>Proyecto de Ingeniería Web I</p>
+        <p data-i18n="footerProject">Proyecto de Ingeniería Web I</p>
     </footer>
 
     <!-- JavaScript externo (se carga al final del body) -->
+    <script src="js/translations.js"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/script.js"></script>
 
 </body>

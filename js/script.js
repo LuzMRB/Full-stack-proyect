@@ -272,14 +272,17 @@ function verificarFinJuego() {
         temporizador = null;
         juegoActivo = false;
 
-        // Mostrar mensaje según resultado
+        // Mostrar mensaje según resultado (traducido según idioma actual)
         if (fichasRestantes === 1) {
-            alert(' ¡VICTORIA! Has dejado solo 1 ficha en ' +
-                movimientos + ' movimientos y ' +
-                formatearTiempo(tiempoSegundos) + '.');
+            const msg = window.i18n && window.i18n.getTranslatedAlert
+                ? window.i18n.getTranslatedAlert('alertsVictory', { moves: movimientos, time: formatearTiempo(tiempoSegundos) })
+                : '¡VICTORIA! Has dejado solo 1 ficha en ' + movimientos + ' movimientos y ' + formatearTiempo(tiempoSegundos) + '.';
+            alert(msg);
         } else {
-            alert(' Fin de la partida. Quedan ' + fichasRestantes +
-                ' fichas. ¡Inténtalo de nuevo!');
+            const msg = window.i18n && window.i18n.getTranslatedAlert
+                ? window.i18n.getTranslatedAlert('alertsGameOver', { pegs: fichasRestantes })
+                : 'Fin de la partida. Quedan ' + fichasRestantes + ' fichas. ¡Inténtalo de nuevo!';
+            alert(msg);
         }
     }
 }
