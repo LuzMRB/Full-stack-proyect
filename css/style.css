@@ -156,7 +156,8 @@ body {
     background-repeat: no-repeat;
     color: var(--ui-text);
     line-height: var(--linea-altura);
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
     overflow: hidden;
     position: relative;
     display: flex;
@@ -189,7 +190,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: clamp(14px, 2.2vh, 22px);
+    padding-top: max(clamp(14px, 2.2vh, 22px), env(safe-area-inset-top));
     padding-bottom: clamp(2px, 0.6vh, 8px);
 }
 
@@ -972,7 +973,10 @@ footer {
     background: transparent;
     color: rgba(31, 41, 55, 0.65);
     text-align: center;
-    padding: clamp(8px, 1vh, 12px) 0;
+    padding-top: clamp(8px, 1vh, 12px);
+    padding-bottom: max(clamp(8px, 1vh, 12px), env(safe-area-inset-bottom));
+    padding-left: 0;
+    padding-right: 0;
     margin-top: 0;
     position: relative;
     z-index: 1;
@@ -1051,6 +1055,13 @@ section:not(#juego) {
 /*  TABLET (hasta 768px) */
 @media screen and (max-width: 768px) {
 
+    .lang-selector {
+        position: fixed;
+        right: 16px;
+        top: max(14px, env(safe-area-inset-top));
+        transform: translateY(0);
+    }
+
     /* Mostrar menú hamburguesa */
     .hamburguesa {
         display: flex;
@@ -1091,6 +1102,7 @@ section:not(#juego) {
     .stats-panel {
         flex-direction: row;
         gap: 12px;
+        margin-top: clamp(16px, 3vh, 24px);
     }
 
     /* Cambiar variable -> afecta a todo el tablero */
@@ -1128,6 +1140,11 @@ section:not(#juego) {
 /*  MÓVIL PEQUEÑO (hasta 480px) */
 @media screen and (max-width: 480px) {
 
+    .lang-selector {
+        right: 12px;
+        top: max(12px, env(safe-area-inset-top));
+    }
+
     :root {
         --board-size: clamp(240px, 40vh, 300px);
         --tamano-ficha: clamp(32px, 4.5vh, 42px);
@@ -1158,7 +1175,8 @@ section:not(#juego) {
     }
     
     .stats-panel {
-        gap: 8px;
+        gap: 10px;
+        margin-top: clamp(14px, 2.5vh, 22px);
     }
 
     .tabla-ranking th,
