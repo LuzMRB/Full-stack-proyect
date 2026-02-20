@@ -27,6 +27,11 @@ let temporizador = null;        // Referencia al setInterval del timer
 let juegoActivo = false;        // ¿El juego ha empezado?
 let historialMovimientos = [];  // Array como pila para deshacer (push/pop)
 
+let onboardingActive = false;
+let onboardingPegIndex = null;
+let onboardingHoleIndex = null;
+let onboardingCompletedThisSession = false;
+
 //  MAPA DE CONEXIONES 
 // Objeto: cada posición tiene un array de movimientos posibles
 // Cada movimiento es [posición_intermedia, posición_destino]
@@ -48,6 +53,84 @@ const CONEXIONES = {
     13: [[8, 4], [12, 11]],
     14: [[9, 5], [13, 12]]
 };
+
+function getFirstValidMove() {
+    const initialBoard = [false, true, true, true, true, true, true, true, true, true, true, true, true, true, true];
+    for (let i = 0; i < 15; i++) {
+        if (!initialBoard[i]) continue;
+        const conexiones = CONEXIONES[i];
+        if (!conexiones) continue;
+        for (const [intermedia, destino] of conexiones) {
+            if (initialBoard[intermedia] && !initialBoard[destino]) {
+                return { pegIndex: i, holeIndex: destino };
+            }
+        }
+    }
+    return null;
+}
+
+function startOnboarding() {
+    if (onboardingCompletedThisSession) return;
+    const move = getFirstValidMove();
+    if (!move) return;
+
+    const tooltip = document.getElementById('onboarding-tooltip');
+    if (!tooltip || !elementosTablero[move.pegIndex] || !elementosTablero[move.holeIndex]) return;
+
+    onboardingActive = true;
+    onboardingPegIndex = move.pegIndex;
+    onboardingHoleIndex = move.holeIndex;
+
+    elementosTablero[move.pegIndex].classList.add('onboarding-peg');
+    elementosTablero[move.holeIndex].classList.add('onboarding-hole');
+
+    const lang = window.i18n && window.i18n.getLang ? window.i18n.getLang() : 'es';
+    const t = window.TRANSLATIONS && window.TRANSLATIONS[lang];
+    const textEl = tooltip.querySelector('.onboarding-tooltip-text');
+    const startText = t && t.onboardingTooltipStart ? t.onboardingTooltipStart : 'Mueve esta ficha al hueco vacío para empezar';
+    if (textEl) {
+        textEl.textContent = startText;
+        tooltip.setAttribute('data-onboarding-phase', 'start');
+    }
+    tooltip.classList.add('is-visible');
+}
+
+function endOnboardingPhase1() {
+    if (!onboardingActive || onboardingPegIndex === null || onboardingHoleIndex === null) return;
+
+    elementosTablero[onboardingPegIndex].classList.remove('onboarding-peg');
+    elementosTablero[onboardingHoleIndex].classList.remove('onboarding-hole');
+    onboardingPegIndex = null;
+    onboardingHoleIndex = null;
+
+    const tooltip = document.getElementById('onboarding-tooltip');
+    if (!tooltip) return;
+
+    const textEl = tooltip.querySelector('.onboarding-tooltip-text');
+    const lang = window.i18n && window.i18n.getLang ? window.i18n.getLang() : 'es';
+    const t = window.TRANSLATIONS && window.TRANSLATIONS[lang];
+    const goalText = t && t.onboardingTooltipGoal ? t.onboardingTooltipGoal : 'Deja solo una ficha en el tablero';
+
+    // Crossfade: fade out text, change content, fade in
+    if (textEl) {
+        textEl.classList.add('is-crossfade');
+        tooltip.setAttribute('data-onboarding-phase', 'goal');
+        setTimeout(() => {
+            textEl.textContent = goalText;
+            textEl.classList.remove('is-crossfade');
+        }, 250);
+    }
+
+    setTimeout(() => {
+        tooltip.classList.add('is-fadeout');
+        setTimeout(() => {
+            tooltip.classList.remove('is-visible', 'is-fadeout');
+            if (textEl) textEl.textContent = '';
+            onboardingCompletedThisSession = true;
+            onboardingActive = false;
+        }, 400);
+    }, 3000);
+}
 
 // SELECCIÓN DE ELEMENTOS DEL DOM 
 // document.getElementById(): selecciona un elemento por su ID
@@ -87,8 +170,8 @@ function inicializarJuego() {
 
     // Actualizar el DOM: recorrer cada posición del tablero
     elementosTablero.forEach((elemento, indice) => {
-        // Limpiar todas las clases extra
-        elemento.classList.remove('ficha', 'vacia', 'seleccionada');
+        // Limpiar todas las clases extra (incl. onboarding)
+        elemento.classList.remove('ficha', 'vacia', 'seleccionada', 'onboarding-peg', 'onboarding-hole');
 
         // Añadir la clase correcta según el estado
         if (tablero[indice]) {
@@ -100,6 +183,19 @@ function inicializarJuego() {
 
     // Actualizar los textos de las estadísticas
     actualizarEstadisticas();
+
+    // Onboarding: ocultar tooltip al reiniciar y mostrar si aplica
+    const tooltip = document.getElementById('onboarding-tooltip');
+    if (tooltip) {
+        tooltip.classList.remove('is-visible', 'is-fadeout', 'is-hiding');
+        tooltip.removeAttribute('data-onboarding-phase');
+        const textEl = tooltip.querySelector('.onboarding-tooltip-text');
+        if (textEl) {
+            textEl.textContent = '';
+            textEl.classList.remove('is-crossfade');
+        }
+    }
+    startOnboarding();
 
     console.log('Juego inicializado');
 }
@@ -245,6 +341,11 @@ function ejecutarMovimiento(origen, destino) {
     movimientos++;
     fichasRestantes--;
     actualizarEstadisticas();
+
+    // Onboarding: primer movimiento válido completado
+    if (onboardingActive && movimientos === 1) {
+        endOnboardingPhase1();
+    }
 
     // Verificar si el juego terminó
     verificarFinJuego();

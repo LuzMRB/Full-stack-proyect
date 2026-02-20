@@ -46,6 +46,19 @@
     localStorage.setItem(STORAGE_KEY, lang);
     applyTranslations(lang);
     updateLangSelector(lang);
+    updateOnboardingTooltip(lang);
+  }
+
+  function updateOnboardingTooltip(lang) {
+    var tooltip = document.getElementById('onboarding-tooltip');
+    if (!tooltip || !tooltip.classList.contains('is-visible') || tooltip.classList.contains('is-fadeout')) return;
+    var phase = tooltip.getAttribute('data-onboarding-phase');
+    var textEl = tooltip.querySelector('.onboarding-tooltip-text');
+    if (!textEl || !phase) return;
+    var t = window.TRANSLATIONS && window.TRANSLATIONS[lang];
+    if (!t) return;
+    var key = phase === 'goal' ? 'onboardingTooltipGoal' : 'onboardingTooltipStart';
+    textEl.textContent = t[key] || textEl.textContent;
   }
 
   function updateLangSelector(lang) {

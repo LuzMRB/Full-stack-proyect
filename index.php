@@ -54,6 +54,7 @@
             <p data-i18n="sectionInstructions">Haz clic en una ficha y luego en un hueco para saltar y eliminar fichas.</p>
 
             <div class="tablero-container">
+                <div class="board-wrap">
                 <div class="tablero" id="tablero">
                     <!-- Fila 1: 1 posición -->
                     <div class="fila">
@@ -85,6 +86,8 @@
                         <div class="posicion ficha" data-pos="13"></div>
                         <div class="posicion ficha" data-pos="14"></div>
                     </div>
+                </div>
+                <div id="onboarding-tooltip" class="onboarding-tooltip" aria-live="polite"><span class="onboarding-tooltip-text"></span></div>
                 </div>
             </div>
 

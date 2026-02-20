@@ -361,6 +361,122 @@ section#juego > p {
     flex-shrink: 0;
 }
 
+.board-wrap {
+    position: relative;
+}
+
+/* Onboarding tooltip — derecha del tablero (desktop), Safari-safe */
+.onboarding-tooltip {
+    position: absolute;
+    left: 100%;
+    margin-left: 32px;
+    top: 8px;
+    padding: 10px 14px;
+    max-width: 280px;
+    font-size: clamp(0.88em, 1.5vh, 0.98em);
+    color: var(--ui-text);
+    white-space: normal;
+    text-align: left;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+.onboarding-tooltip::after {
+    content: "";
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 8px solid transparent;
+    border-right-color: rgba(255, 255, 255, 0.78);
+}
+@supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
+    .onboarding-tooltip {
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+    .onboarding-tooltip::after {
+        border-right-color: rgba(255, 255, 255, 0.78);
+    }
+}
+@supports not ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
+    .onboarding-tooltip {
+        background: rgba(255, 255, 255, 0.92);
+    }
+    .onboarding-tooltip::after {
+        border-right-color: rgba(255, 255, 255, 0.92);
+    }
+}
+.onboarding-tooltip.is-visible {
+    opacity: 1;
+    animation: onboarding-float 2.5s ease-in-out infinite;
+}
+.onboarding-tooltip.is-visible.is-hiding {
+    opacity: 0;
+    animation: none;
+    transition: opacity 0.4s ease-out;
+}
+.onboarding-tooltip.is-visible.is-fadeout {
+    opacity: 0;
+    animation: none;
+    transition: opacity 0.4s ease-out;
+}
+.onboarding-tooltip-text {
+    display: block;
+    transition: opacity 0.25s ease-out;
+}
+.onboarding-tooltip-text.is-crossfade {
+    opacity: 0;
+}
+@keyframes onboarding-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* Onboarding glow — pulso suave verde (peg + hueco) */
+.posicion.onboarding-peg {
+    animation: onboarding-peg-glow 1.5s ease-in-out infinite;
+}
+.posicion.onboarding-hole {
+    animation: onboarding-hole-glow 1.5s ease-in-out infinite;
+}
+@keyframes onboarding-peg-glow {
+    0%, 100% {
+        box-shadow:
+            0 10px 16px rgba(16, 24, 40, 0.12),
+            0 2px 4px rgba(16, 24, 40, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.88),
+            0 0 0 0 rgba(26, 94, 68, 0.4);
+    }
+    50% {
+        box-shadow:
+            0 12px 20px rgba(16, 24, 40, 0.16),
+            0 2px 4px rgba(16, 24, 40, 0.08),
+            inset 0 1px 0 rgba(255, 255, 255, 0.88),
+            0 0 20px 2px rgba(26, 94, 68, 0.35);
+    }
+}
+@keyframes onboarding-hole-glow {
+    0%, 100% {
+        box-shadow:
+            inset 0 10px 14px rgba(120, 129, 142, 0.28),
+            inset 0 -3px 6px rgba(255, 255, 255, 0.7),
+            0 1px 2px rgba(255, 255, 255, 0.45),
+            0 0 0 0 rgba(26, 94, 68, 0.35);
+    }
+    50% {
+        box-shadow:
+            inset 0 10px 14px rgba(120, 129, 142, 0.28),
+            inset 0 -3px 6px rgba(255, 255, 255, 0.7),
+            0 1px 2px rgba(255, 255, 255, 0.45),
+            0 0 18px 2px rgba(26, 94, 68, 0.4);
+    }
+}
+
 .tablero {
     display: flex;
     flex-direction: column;
@@ -887,6 +1003,39 @@ section:not(#juego) {
     .control-icon {
         font-size: 1.4rem;
     }
+
+    /* Mobile: tooltip above board, centered, arrow points down */
+    .onboarding-tooltip {
+        left: 50%;
+        margin-left: 0;
+        margin-bottom: 12px;
+        top: auto;
+        bottom: 100%;
+        transform: translateX(-50%);
+        max-width: min(320px, 90vw);
+        text-align: center;
+    }
+    .onboarding-tooltip::after {
+        left: 50%;
+        top: auto;
+        bottom: -14px;
+        transform: translateX(-50%);
+        border: 8px solid transparent;
+        border-top-color: rgba(255, 255, 255, 0.78);
+    }
+    @supports not ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
+        .onboarding-tooltip::after {
+            border-top-color: rgba(255, 255, 255, 0.92);
+        }
+    }
+    .onboarding-tooltip.is-visible {
+        animation: onboarding-float-mobile 2.5s ease-in-out infinite;
+    }
+}
+
+@keyframes onboarding-float-mobile {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-4px); }
 }
 
 /*  MÓVIL PEQUEÑO (hasta 480px) */

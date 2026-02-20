@@ -82,7 +82,9 @@
 
             <!-- Contenedor del tablero triangular -->
             <div class="tablero-container">
-                <!-- 
+                <div class="board-wrap">
+                <div class="tablero" id="tablero">
+                    <!-- 
                     El tablero tiene 15 posiciones en forma de triángulo (5 filas).
                     Cada posición es un <div> con:
                     - class="posicion": estilo base
@@ -97,7 +99,6 @@
                       [6][7][8][9]
                     [10][11][12][13][14]
                 -->
-                <div class="tablero" id="tablero">
                     <!-- Fila 1: 1 posición -->
                     <div class="fila">
                         <div class="posicion vacia" data-pos="0"></div>
@@ -128,6 +129,8 @@
                         <div class="posicion ficha" data-pos="13"></div>
                         <div class="posicion ficha" data-pos="14"></div>
                     </div>
+                </div>
+                <div id="onboarding-tooltip" class="onboarding-tooltip" aria-live="polite"><span class="onboarding-tooltip-text"></span></div>
                 </div>
             </div>
 
